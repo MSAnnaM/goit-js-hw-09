@@ -2,6 +2,8 @@ import Notiflix from 'notiflix';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 const btnStart = document.querySelector('button[data-start]');
+const finish = document.querySelectorAll('span.value');
+console.log(finish);
 btnStart.setAttribute('disabled', 'disabled');
 let selectedTime = null;
 let timerId = null;
@@ -65,5 +67,8 @@ function addLeadingZero(value) {
 const stop = () => {
     clearInterval(timerId);
     calendar.removeAttribute('disabled', 'disabled');
-    btnStart.setAttribute('disabled', 'disabled');
+  btnStart.setAttribute('disabled', 'disabled');
+  finish.forEach((num)=> {
+    num.style.color = 'red';
+  });
 }
