@@ -11,6 +11,12 @@ const spanHours = document.querySelector('span[data-hours]');
 const spanMinutes = document.querySelector('span[data-minutes]');
 const spanSeconds = document.querySelector('span[data-seconds]');
 const calendar = document.querySelector('#datetime-picker');
+Notiflix.Notify.init({
+  position: 'left-top',
+  timeout: 5000,
+  clickToClose: true,
+  cssAnimationStyle:'from-right',
+})
 flatpickr(calendar, {
   enableTime: true,
   time_24hr: true,
@@ -73,7 +79,7 @@ const stop = () => {
     finish.forEach(num => {
       num.style.color = 'black';
     });
-    Notiflix.Notify.success('Choose a new date!');
+    Notiflix.Notify.info('Choose a new date!');
   }, 2000);
 };
 btnStart.addEventListener('click', start);
