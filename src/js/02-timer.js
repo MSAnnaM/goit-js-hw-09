@@ -3,8 +3,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 const btnStart = document.querySelector('button[data-start]');
 const finish = document.querySelectorAll('span.value');
-console.log(finish);
-btnStart.setAttribute('disabled', 'disabled');
+btnStart.disabled = true;
 let selectedTime = null;
 let timerId = null;
 const spanDays = document.querySelector('span[data-days]');
@@ -20,33 +19,29 @@ flatpickr(calendar, {
   onClose(selectedDates) {
     if (selectedDates[0] < Date.now()) {
       Notiflix.Notify.warning('Please choose a date in the future');
+      btnStart.disabled = true;
     } else {
-      btnStart.removeAttribute('disabled', 'disabled');
+      btnStart.disabled = false;
       Notiflix.Notify.success('Click on start');
-      const startTimer = () => {
-        selectedTime = selectedDates[0];
-        start();
-      };
-      btnStart.addEventListener('click', startTimer);
     }
   },
 });
-const start = () => {
-    calendar.setAttribute('disabled', 'disabled');
-    timerId = setInterval(() => {
-    let currentTime = Date.now();
-        const timerTime = selectedTime - currentTime;
-        if (timerTime <= 0) {
-            stop();
-        Notiflix.Notify.success('Time is come');  
-            return
-    }
-      const { days, hours, minutes, seconds } = convertMs(timerTime);
-      spanDays.textContent = `${days}`;
-      spanHours.textContent = `${hours}`;
-      spanMinutes.textContent = `${minutes}`;
-      spanSeconds.textContent = `${seconds}`;
 
+const start = () => {
+  selectedTime = new Date(calendar.value).getTime();
+  calendar.setAttribute('disabled', 'disabled');
+  timerId = setInterval(() => {
+    let currentTime = Date.now();
+    const timerTime = selectedTime - currentTime;
+    if (timerTime <= 0) {
+      stop();
+      return;
+    }
+    const { days, hours, minutes, seconds } = convertMs(timerTime);
+    spanDays.textContent = `${days}`;
+    spanHours.textContent = `${hours}`;
+    spanMinutes.textContent = `${minutes}`;
+    spanSeconds.textContent = `${seconds}`;
   }, 1000);
 };
 function convertMs(ms) {
@@ -57,18 +52,28 @@ function convertMs(ms) {
   const days = addLeadingZero(Math.floor(ms / day));
   const hours = addLeadingZero(Math.floor((ms % day) / hour));
   const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
-  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+  const seconds = addLeadingZero(
+    Math.floor((((ms % day) % hour) % minute) / second)
+  );
 
   return { days, hours, minutes, seconds };
 }
 function addLeadingZero(value) {
-     return String(value).padStart(2, 0);
+  return String(value).padStart(2, 0);
 }
 const stop = () => {
-    clearInterval(timerId);
-    calendar.removeAttribute('disabled', 'disabled');
-  btnStart.setAttribute('disabled', 'disabled');
-  finish.forEach((num)=> {
+  Notiflix.Notify.success('Time is come');
+  clearInterval(timerId);
+  calendar.removeAttribute('disabled', 'disabled');
+  btnStart.disabled = true;
+  finish.forEach(num => {
     num.style.color = 'red';
   });
-}
+  setTimeout(() => {
+    finish.forEach(num => {
+      num.style.color = 'black';
+    });
+    Notiflix.Notify.success('Choose a new date!');
+  }, 2000);
+};
+btnStart.addEventListener('click', start);
