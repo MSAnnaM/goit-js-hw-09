@@ -2,7 +2,8 @@ import Notiflix from 'notiflix';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 const btnStart = document.querySelector('button[data-start]');
-const finish = document.querySelectorAll('span.value');
+const finish = document.querySelectorAll('div.field');
+console.log(finish);
 btnStart.disabled = true;
 let selectedTime = null;
 let timerId = null;
@@ -32,7 +33,12 @@ flatpickr(calendar, {
     }
   },
 });
-
+const timerText = (days, hours, minutes, seconds) => {
+  spanDays.textContent = `${addLeadingZero(days)}`;
+    spanHours.textContent = `${addLeadingZero(hours)}`;
+    spanMinutes.textContent = `${addLeadingZero(minutes)}`;
+    spanSeconds.textContent = `${addLeadingZero(seconds)}`;
+}
 const start = () => {
   selectedTime = new Date(calendar.value).getTime();
   calendar.setAttribute('disabled', 'disabled');
@@ -44,10 +50,7 @@ const start = () => {
       return;
     }
     const { days, hours, minutes, seconds } = convertMs(timerTime);
-    spanDays.textContent = `${days}`;
-    spanHours.textContent = `${hours}`;
-    spanMinutes.textContent = `${minutes}`;
-    spanSeconds.textContent = `${seconds}`;
+    timerText(days, hours, minutes, seconds);
   }, 1000);
 };
 function convertMs(ms) {
@@ -55,13 +58,10 @@ function convertMs(ms) {
   const minute = second * 60;
   const hour = minute * 60;
   const day = hour * 24;
-  const days = addLeadingZero(Math.floor(ms / day));
-  const hours = addLeadingZero(Math.floor((ms % day) / hour));
-  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
-  const seconds = addLeadingZero(
-    Math.floor((((ms % day) % hour) % minute) / second)
-  );
-
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
   return { days, hours, minutes, seconds };
 }
 function addLeadingZero(value) {
@@ -72,12 +72,14 @@ const stop = () => {
   clearInterval(timerId);
   calendar.removeAttribute('disabled', 'disabled');
   btnStart.disabled = true;
+  // finish.classList.add('red-texte');
   finish.forEach(num => {
-    num.style.color = 'red';
+    num.firstChild.classList.add('red-texte');
   });
   setTimeout(() => {
+    // finish.classList.remove('red-texte');
     finish.forEach(num => {
-      num.style.color = 'black';
+      num.firstChild.classList.remove('red-texte');
     });
     Notiflix.Notify.info('Choose a new date!');
   }, 2000);
