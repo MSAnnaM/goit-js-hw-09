@@ -72,14 +72,14 @@ const stop = () => {
   clearInterval(timerId);
   calendar.removeAttribute('disabled', 'disabled');
   btnStart.disabled = true;
-  // finish.classList.add('red-texte');
   finish.forEach(num => {
-    num.firstChild.classList.add('red-texte');
+    const changeTexte = num.firstChild;
+    changeTexte.classList.add('red-texte');
   });
   setTimeout(() => {
-    // finish.classList.remove('red-texte');
     finish.forEach(num => {
-      num.firstChild.classList.remove('red-texte');
+      const changeTexte = num.firstChild;
+changeTexte.classList.remove('red-texte');
     });
     Notiflix.Notify.info('Choose a new date!');
   }, 2000);
