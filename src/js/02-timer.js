@@ -2,8 +2,6 @@ import Notiflix from 'notiflix';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 const btnStart = document.querySelector('button[data-start]');
-const finish = document.querySelectorAll('div.field');
-console.log(finish);
 btnStart.disabled = true;
 let selectedTime = null;
 let timerId = null;
@@ -72,15 +70,7 @@ const stop = () => {
   clearInterval(timerId);
   calendar.removeAttribute('disabled', 'disabled');
   btnStart.disabled = true;
-  finish.forEach(num => {
-    const changeTexte = num.firstChild;
-    changeTexte.classList.add('red-texte');
-  });
   setTimeout(() => {
-    finish.forEach(num => {
-      const changeTexte = num.firstChild;
-changeTexte.classList.remove('red-texte');
-    });
     Notiflix.Notify.info('Choose a new date!');
   }, 2000);
 };
